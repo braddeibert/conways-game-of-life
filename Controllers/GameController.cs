@@ -81,9 +81,9 @@ public class GameController : ControllerBase
             return NotFound(errorResponse);
         }
 
-        // var nextGeneration = _gameService.GetNextGeneration(gameBoard);
+        var nextGeneration = _gameService.GetNextGeneration(gameBoard);
 
-        return Ok(gameBoard);
+        return Ok(nextGeneration);
     }
 
     // GET /api/game/{id}/generation-number/{generationNumber}

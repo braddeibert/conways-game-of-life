@@ -18,6 +18,8 @@ public class GameService : IGameService
   private readonly ILogger<GameService> _logger;
   private readonly IGameRepository _gameRepository;
 
+  private readonly int _boardSize = 100;
+
   public GameService(ILogger<GameService> logger, IGameRepository gameRepository)
   {
     _logger = logger;
@@ -66,7 +68,29 @@ public class GameService : IGameService
 
   public GameBoard GetNextGeneration(GameBoard gameBoard)
   {
-    throw new NotImplementedException("TODO");
+    var currentGeneration = gameBoard.Board;
+    var nextGeneration = new List<List<int>>();
+
+    // Assuming a 100x100 board
+    for (int column = 0; column < _boardSize; column++)
+    {
+      // create a new row
+      nextGeneration.Add(new List<int>(_boardSize));
+
+      for (int row = 0; row < _boardSize; row++)
+      {
+        var isAlive = ComputeCellLife(column, row, currentGeneration);
+        nextGeneration[column].Add(isAlive ? 1 : 0);
+      }
+    }
+
+    var newBoard = new GameBoard
+    {
+      GameId = gameBoard.GameId,
+      Board = nextGeneration
+    };
+
+    return newBoard;
   }
 
   private GameBoard BuildGameBoard(Models.Data.Game game)
@@ -77,21 +101,66 @@ public class GameService : IGameService
       Board = new List<List<int>>()
     };
 
-    // assuming a 100x100 board
-    for (int column = 0; column < 100; column++)
+    // assuming a 100x100 board, fill with dead cells
+    for (int column = 0; column < _boardSize; column++)
     {
       // create a new row
-      gameBoard.Board.Add(new List<int>(100));
+      gameBoard.Board.Add(new List<int>(_boardSize));
 
-      // iterate through row and set cells alive from database
-      for (int row = 0; row < 100; row++)
+      for (int row = 0; row < _boardSize; row++)
       {
-        gameBoard.Board[column].Add(
-          game.Cells.Any(cell => cell.X == column && cell.Y == row) ? 1 : 0
-        );
+        gameBoard.Board[column].Add(0);
       }
     }
 
+    // set alive cells from database
+    foreach (var cell in game.Cells)
+    {
+      gameBoard.Board[cell.X][cell.Y] = 1;
+    }
+
     return gameBoard;
+  }
+
+  private bool ComputeCellLife(int x, int y, List<List<int>> board)
+  {
+    var isAlive = board[x][y] == 1;
+    var aliveNeighborCount = 0;
+
+    // iterate 3x3 grid around the cell
+    for (int row = x - 1; row <= x + 1; row++)
+    {
+      for (int column = y - 1; column <= y + 1; column++)
+      {
+        // avoid out of bounds errors
+        if (row < 0 || row >= _boardSize || column < 0 || column >= _boardSize)
+        {
+          continue;
+        }
+
+        var isSelf = row == x && column == y;
+        if (isSelf)
+        {
+          continue;
+        }
+
+        // checking if neighbor is alive
+        if (board[row][column] == 1)
+        {
+          aliveNeighborCount++;
+        }
+      }
+    }
+
+    // Apply the rules of Conway's Game of Life
+    // dead cell with 3 alive neighbors becomes alive
+    if (!isAlive && aliveNeighborCount == 3) return true;
+
+    // living cells with 2 or 3 neighbors stay alive
+    if (isAlive && (aliveNeighborCount == 2 || aliveNeighborCount == 3)) return true;
+
+    // living cells with less than 2 or more than 3 neighbors die
+    // dead cells without exactly 3 neighbors stay dead
+    return false;
   }
 }
