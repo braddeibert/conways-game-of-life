@@ -1,11 +1,13 @@
 using game_of_life.Models.Service;
 using game_of_life.Models.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace game_of_life.Repository;
 
 public interface IGameRepository
 {
   Task<Game> CreateGameAsync(IList<Models.Service.GameCell> cells);
+  Task<Game> GetGameAsync(int gameId);
 }
 
 public class GameRepository : IGameRepository
@@ -51,6 +53,16 @@ public class GameRepository : IGameRepository
     }
 
     await _context.SaveChangesAsync();
+
+    return game;
+  }
+
+  public async Task<Game?> GetGameAsync(int gameId)
+  {
+    // Retrieve the game by its ID
+    var game = await _context.Games
+      .Include(g => g.Cells)
+      .FirstOrDefaultAsync(g => g.GameId == gameId);
 
     return game;
   }

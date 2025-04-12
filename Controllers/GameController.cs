@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using game_of_life.Models.API;
 using game_of_life.Services;
+using System.Threading.Tasks;
 
 namespace game_of_life.Controllers;
 
@@ -66,12 +67,23 @@ public class GameController : ControllerBase
     /// <param name="id">The ID of the game board.</param>
     /// <returns>Returns the next generation of the game board.</returns>
     [HttpGet("{id}/next-generation")]
-    public IActionResult GetNextGeneration(int id)
+    public async Task<IActionResult> GetNextGeneration(int id)
     {
-        // Logic to get the next generation of the game board
-        // ...
+        var gameBoard = await _gameService.GetGameAsync(id);
+        if (gameBoard == null)
+        {
+            var errorResponse = new ErrorResponse
+            {
+                Error = "GameNotFound",
+                Message = $"Game with ID {id} does not exist."
+            };
 
-        return Ok("Next generation retrieved successfully.");
+            return NotFound(errorResponse);
+        }
+
+        // var nextGeneration = _gameService.GetNextGeneration(gameBoard);
+
+        return Ok(gameBoard);
     }
 
     // GET /api/game/{id}/generation-number/{generationNumber}

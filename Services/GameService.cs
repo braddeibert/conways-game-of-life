@@ -1,12 +1,16 @@
 
 using game_of_life.Repository;
 using game_of_life.Models.API;
+using game_of_life.Models.Service;
+using game_of_life.Models.Data;
 
 namespace game_of_life.Services;
 
 public interface IGameService
 {
   Task<int> CreateGameAsync(CreateGameRequest gameRequest);
+  Task<GameBoard?> GetGameAsync(int gameId);
+  GameBoard GetNextGeneration(GameBoard gameBoard);
 }
 
 public class GameService : IGameService
@@ -44,4 +48,50 @@ public class GameService : IGameService
     return game.GameId; // Return the ID of the created game board
   }
 
+  public async Task<GameBoard?> GetGameAsync(int gameId)
+  {
+    // Logic to retrieve a game by its ID
+    var game = await _gameRepository.GetGameAsync(gameId);
+
+    if (game == null)
+    {
+      _logger.LogWarning("Game with ID {GameId} not found.", gameId);
+      return null;
+    }
+
+    var gameBoard = BuildGameBoard(game);
+
+    return gameBoard;
+  }
+
+  public GameBoard GetNextGeneration(GameBoard gameBoard)
+  {
+    throw new NotImplementedException("TODO");
+  }
+
+  private GameBoard BuildGameBoard(Models.Data.Game game)
+  {
+    var gameBoard = new GameBoard()
+    {
+      GameId = game.GameId,
+      Board = new List<List<int>>()
+    };
+
+    // assuming a 100x100 board
+    for (int column = 0; column < 100; column++)
+    {
+      // create a new row
+      gameBoard.Board.Add(new List<int>(100));
+
+      // iterate through row and set cells alive from database
+      for (int row = 0; row < 100; row++)
+      {
+        gameBoard.Board[column].Add(
+          game.Cells.Any(cell => cell.X == column && cell.Y == row) ? 1 : 0
+        );
+      }
+    }
+
+    return gameBoard;
+  }
 }
