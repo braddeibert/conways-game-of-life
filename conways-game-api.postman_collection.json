@@ -1,0 +1,200 @@
+{
+	"info": {
+		"_postman_id": "29619c8d-2215-4957-b60f-8a569a31da03",
+		"name": "Game",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Game",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"Cells\": [\n        {\"x\": 2, \"y\": 1},\n        {\"x\": 3, \"y\": 2},\n        {\"x\": 3, \"y\": 3},\n        {\"x\": 2, \"y\": 3},\n        {\"x\": 1, \"y\": 3}\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5024/api/game/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5024",
+					"path": [
+						"api",
+						"game",
+						"create"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Create Game with glider",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Cells\": [\n        {\"x\": 2, \"y\": 1},\n        {\"x\": 3, \"y\": 2},\n        {\"x\": 3, \"y\": 3},\n        {\"x\": 2, \"y\": 3},\n        {\"x\": 1, \"y\": 3}\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5024/api/game/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5024",
+							"path": [
+								"api",
+								"game",
+								"create"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Create Game with square",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Cells\": [\n        {\"x\": 2, \"y\": 3},\n        {\"x\": 3, \"y\": 2},\n        {\"x\": 3, \"y\": 3},\n        {\"x\": 2, \"y\": 2}\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5024/api/game/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5024",
+							"path": [
+								"api",
+								"game",
+								"create"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Create Game with oscillator",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Cells\": [\n        {\"x\": 3, \"y\": 2},\n        {\"x\": 3, \"y\": 3},\n        {\"x\": 3, \"y\": 1}\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5024/api/game/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5024",
+							"path": [
+								"api",
+								"game",
+								"create"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Get Next Generation",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5024/api/game/:gameId/next-generation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5024",
+					"path": [
+						"api",
+						"game",
+						":gameId",
+						"next-generation"
+					],
+					"variable": [
+						{
+							"key": "gameId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get n-th Generation",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5024/api/game/:gameId/generation-number/:generationNumber",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5024",
+					"path": [
+						"api",
+						"game",
+						":gameId",
+						"generation-number",
+						":generationNumber"
+					],
+					"variable": [
+						{
+							"key": "gameId",
+							"value": "1"
+						},
+						{
+							"key": "generationNumber",
+							"value": "10000"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

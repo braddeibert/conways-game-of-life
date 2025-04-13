@@ -11,6 +11,7 @@ Note: Running locally will automatically create a SQLite database for the applic
 1. `dotnet run`
 
 ## API Endpoints
+Note: There is a Postman collection provided you can import & use: `conways-game-api.postman_collection.json`
 
 ### Create a New Game
 Creates a new game with initial live cells configuration.
