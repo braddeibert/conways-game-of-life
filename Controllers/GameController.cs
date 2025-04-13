@@ -122,9 +122,6 @@ public class GameController : ControllerBase
     [HttpGet("{id}/final-generation")]
     public IActionResult GetFinalGeneration(int id)
     {
-        // Logic to get the final generation of the game board
-        // ...
-
-        return Ok("Final generation retrieved successfully.");
+        throw new NotImplementedException("This endpoint is not implemented.");
     }
 }
