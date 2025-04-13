@@ -11,6 +11,7 @@ public interface IGameService
   Task<int> CreateGameAsync(CreateGameRequest gameRequest);
   Task<GameBoard?> GetGameAsync(int gameId);
   GameBoard GetNextGeneration(GameBoard gameBoard);
+  GameBoard GetGameBoardGeneration(GameBoard gameBoard, int generationNumber);
 }
 
 public class GameService : IGameService
@@ -91,6 +92,24 @@ public class GameService : IGameService
     };
 
     return newBoard;
+  }
+
+  public GameBoard GetGameBoardGeneration(GameBoard gameBoard, int generationNumber)
+  {
+    if (generationNumber == 0)
+    {
+      return gameBoard;
+    }
+
+    GameBoard nextGeneration = GetNextGeneration(gameBoard);
+
+    // Logic to get the game board for a specific generation
+    for (int i = 1; i < generationNumber; i++)
+    {
+      nextGeneration = GetNextGeneration(nextGeneration);
+    }
+
+    return nextGeneration;
   }
 
   private GameBoard BuildGameBoard(Models.Data.Game game)

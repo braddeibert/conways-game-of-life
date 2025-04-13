@@ -94,12 +94,23 @@ public class GameController : ControllerBase
     /// <param name="generationNumber">The generation number to retrieve.</param>
     /// <returns>Returns the n-th generation of the game board.</returns>
     [HttpGet("{id}/generation-number/{generationNumber}")]
-    public IActionResult GetGeneration(int id, int generationNumber)
+    public async Task<IActionResult> GetGeneration(int id, int generationNumber)
     {
-        // Logic to get the specified generation of the game board
-        // ...
+        var gameBoard = await _gameService.GetGameAsync(id);
+        if (gameBoard == null)
+        {
+            var errorResponse = new ErrorResponse
+            {
+                Error = "GameNotFound",
+                Message = $"Game with ID {id} does not exist."
+            };
 
-        return Ok("Generation retrieved successfully.");
+            return NotFound(errorResponse);
+        }
+
+        var nthGeneration = _gameService.GetGameBoardGeneration(gameBoard, generationNumber);
+
+        return Ok(nthGeneration);
     }
 
     // GET /api/game/{id}/final-generation
