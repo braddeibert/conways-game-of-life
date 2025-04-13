@@ -67,31 +67,39 @@ public class GameService : IGameService
     return gameBoard;
   }
 
-  public GameBoard GetNextGeneration(GameBoard gameBoard)
+  public GameBoard GetNextGeneration(GameBoard currentGame)
   {
-    var currentGeneration = gameBoard.Board;
-    var nextGeneration = new List<List<int>>();
+    var nextGeneration = new GameBoard
+    {
+      GameId = currentGame.GameId,
+      IsStill = true,
+      IsDead = true,
+      Board = new List<List<int>>()
+    };
 
     // Assuming a 100x100 board
     for (int column = 0; column < _boardSize; column++)
     {
       // create a new row
-      nextGeneration.Add(new List<int>(_boardSize));
+      nextGeneration.Board.Add(new List<int>(_boardSize));
 
       for (int row = 0; row < _boardSize; row++)
       {
-        var isAlive = ComputeCellLife(column, row, currentGeneration);
-        nextGeneration[column].Add(isAlive ? 1 : 0);
+        var isAlive = ComputeCellLife(column, row, currentGame.Board);
+
+        if (isAlive) nextGeneration.IsDead = false;
+
+        nextGeneration.Board[column].Add(isAlive ? 1 : 0);
+
+        if (currentGame.Board[column][row] != nextGeneration.Board[column][row])
+        {
+          _logger.LogInformation("Cell at ({X}, {Y}) changed state from {OldState} to {NewState}.", column, row, currentGame.Board[column][row], nextGeneration.Board[column][row]);
+          nextGeneration.IsStill = false;
+        }
       }
     }
 
-    var newBoard = new GameBoard
-    {
-      GameId = gameBoard.GameId,
-      Board = nextGeneration
-    };
-
-    return newBoard;
+    return nextGeneration;
   }
 
   public GameBoard GetGameBoardGeneration(GameBoard gameBoard, int generationNumber)
@@ -107,6 +115,12 @@ public class GameService : IGameService
     for (int i = 1; i < generationNumber; i++)
     {
       nextGeneration = GetNextGeneration(nextGeneration);
+
+      // if the game board is still or dead, we stop early
+      if (nextGeneration.IsDead || nextGeneration.IsStill)
+      {
+        break;
+      }
     }
 
     return nextGeneration;
